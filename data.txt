@@ -1,0 +1,11 @@
+// the players data
+// name sex age endurance speed skill
+p1 M 21 9 1 9
+p2 F 22 8 2 8
+p3 M 23 7 3 7
+p4 F 24 6 4 6
+p5 M 25 5 5 5
+p6 F 26 4 6 4
+P7 M 27 3 7 3
+P8 F 28 2 8 2
+p9 M 29 1 9 1
