@@ -4,7 +4,7 @@ package main
   * Module to do the heavy lifting. Computes all the different
   * combinations.
   */
-  
+
 import "fmt"
 
 func runSimulation(players map[string]Player) {
@@ -16,29 +16,25 @@ func runSimulation(players map[string]Player) {
   ppt := 3                     // sqr ceil of players
   workSpace := [][]string{}    // the layout of players
   offsets := make([]int, ppt)  // for shitting the layout
-  teams := [][]Team{}          // all the team layouts
-  numSims := 0                 // the number of team layout, len of teams
+  sims := []Scenario{}          // all the team layouts
 
   // init the original configufration {{a,b,c},{d,e,f},{h,i,g}}
   initSimulation(&workSpace, playerIds, ppt)
-  numSims += addTeams(&workSpace, &teams, ppt)
+
+  // calculate the 2n + 2 posible team senerios
+  addTeams(&workSpace, &sims, &players, ppt)
+
+
+  /**  UNDER WORK **/
 
   for nextOffest(&offsets, ppt) {
       // increment
-      numSims += addTeams(&workSpace, &teams, ppt)
+      addTeams(&workSpace, &sims, &players, ppt)
   }
 
-  for i := 0; i < numSims; i++ {
-    for j := 0; j < ppt; j++ {
-      ids := teams[i][j].players
-      for _, ids := range(ids) {
-        fmt.Printf("%-10s", players[ids].name)
-      }
-      fmt.Print("\n")
-      //fmt.Println(teams[i][j].toString())
+  for i := 0; i < len(sims); i++ {
+      fmt.Println(sims[i].toString())
     }
-    fmt.Print("\n")
-  }
 }
 
 func nextOffest(offsets *[]int, ppt int) bool {
@@ -51,28 +47,25 @@ func nextOffest(offsets *[]int, ppt int) bool {
 }
 
 //add all the team combinations for the current orientaion of the workSpace
-func addTeams(workSpace *[][]string, teams *[][]Team, ppt int) (numSims int){
+func addTeams(workSpace *[][]string, teams *[]Scenario, players *map[string]Player, ppt int) {
 
   /** up and down **/
   row := []Team{}
   col := []Team{}
   for i := 0; i < ppt; i++ {
-    teamRow := []string{}
-    teamCol := []string{}
+    teamRow := []Player{}
+    teamCol := []Player{}
     for j := 0; j < ppt; j++ {
-      teamRow = append(teamRow, (*workSpace)[i][j])
-      teamCol = append(teamCol, (*workSpace)[j][i])
+      teamRow = append(teamRow, (*players)[(*workSpace)[i][j]])
+      teamCol = append(teamCol, (*players)[(*workSpace)[j][i]])
     }
     // create team, add team to row
     row = append(row, newTeam(teamRow))
     col = append(col, newTeam(teamCol))
   }
   // add the team row to the teams matrix
-  *teams = append(*teams, row)
-  numSims++
-
-  *teams = append(*teams, col)
-  numSims++
+  *teams = append(*teams, newScenario(row))
+  *teams = append(*teams, newScenario(col))
 
   /** Diagonals **/
   for i := 1; i < ppt; i++ {
@@ -81,11 +74,11 @@ func addTeams(workSpace *[][]string, teams *[][]Team, ppt int) (numSims int){
     for j := 0; j < ppt; j++ {
       x := 0
       y := j
-      teamDiag := []string{}
-      teamDiag2 := []string{}
+      teamDiag := []Player{}
+      teamDiag2 := []Player{}
       for k := 0; k < ppt; k++ {
-        teamDiag = append(teamDiag, (*workSpace)[x][y])
-        teamDiag2 = append(teamDiag2, (*workSpace)[x][ppt - 1 - y])
+        teamDiag = append(teamDiag, (*players)[(*workSpace)[x][y]])
+        teamDiag2 = append(teamDiag2, (*players)[(*workSpace)[x][ppt - 1 - y]])
         x = (x + 1) % ppt
         y = (y + i) % ppt
       }
@@ -94,14 +87,9 @@ func addTeams(workSpace *[][]string, teams *[][]Team, ppt int) (numSims int){
       diag2 = append(diag2, newTeam(teamDiag2))
     }
     // add the team row to the teams matrix
-    *teams = append(*teams, diag)
-    numSims++
-
-    *teams = append(*teams, diag2)
-    numSims++
+    *teams = append(*teams, newScenario(diag))
+    *teams = append(*teams, newScenario(diag2))
   }
-
-  return
 }
 
 // put all the people into the workspace in a grid
@@ -116,29 +104,3 @@ func initSimulation(workSpace *[][]string, playerIds []string, ppt int) {
     *workSpace = append(*workSpace, row)
   }
 }
-
-/*
-func runSimulation(players map[string]Player) {
-  var ids []string
-  for _, p := range(players) {
-    ids = append(ids, p.id)
-  }
-
-	p, err:=NewPerm(ids, nil)
-	if err!=nil{
-		fmt.Println(err)
-		return
-	}
-
-  for result, _ := p.Next(); err==nil; result, err = p.Next(){
-    index := p.Index()
-    strs := result.([]string)
-    fmt.Printf("%14s", strconv.Itoa(int(index)))
-    for i := 0; i < len(strs); i++ {
-        person := players[strs[i]]
-        fmt.Printf("%-10s", person.name)
-    }
-    fmt.Print("\n")
-	}
-}
-*/
