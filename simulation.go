@@ -8,47 +8,156 @@ package main
 import "fmt"
 
 func runSimulation(players map[string]Player) {
+  // person per team should be a square number
+  var ppt int = 1
+  for (ppt * ppt < len(players)){
+    ppt++
+  }
+
+  // fill in the empty slots with people with zero scores
+  for i := len(players); i < ppt*ppt; i++ {
+    uuid := UUID()
+    players[uuid] = Player {name: "--", id: uuid, sex: "Male"}
+  }
+
+  // get the keys from the map to allow for itteration on the map
   var playerIds []string
   for _, p := range(players) {
     playerIds = append(playerIds, p.id)
   }
 
-  ppt := 3                     // sqr ceil of players
   workSpace := [][]string{}    // the layout of players
-  offsets := make([]int, ppt)  // for shitting the layout
-  sims := []Scenario{}          // all the team layouts
+  offsets := make([]int, ppt)  // for shifting the layout
+  sims := []Scenario{}         // all the team layouts
 
   // init the original configufration {{a,b,c},{d,e,f},{h,i,g}}
   initSimulation(&workSpace, playerIds, ppt)
 
-  // calculate the 2n + 2 posible team senerios
-  addTeams(&workSpace, &sims, &players, ppt)
-
-
-  /**  UNDER WORK **/
-
-  for nextOffest(&offsets, ppt) {
-      // increment
-      addTeams(&workSpace, &sims, &players, ppt)
+  run := true
+  for run == true {
+    // calculate the 2n + 2 posible team senerios
+    addTeams(&workSpace, &sims, &players, ppt)
+    run = nextOffest(&workSpace, &offsets, ppt)
   }
 
-  for i := 0; i < len(sims); i++ {
-      fmt.Println(sims[i].toString())
+  run = true
+  for run == true {
+    // calculate the 2n + 2 posible team senerios
+    addTeams(&workSpace, &sims, &players, ppt)
+    run = nextOffest2(&workSpace, &offsets, ppt)
+  }
+
+  // sort to get the scenarios with the lowest difference
+  sortSims(&sims)
+
+  numResults := 3
+  top := make([]Scenario, numResults)
+  index := 0
+  i := 0
+  // print top five
+  for index < numResults && i < len(sims) {
+    if !contains(&top, &(sims[i]), index) {
+      top[index] = sims[i]
+      index++
     }
+    i++
+  }
+
+  for _, s := range top {
+    fmt.Println(s.toString())
+  }
 }
 
-func nextOffest(offsets *[]int, ppt int) bool {
-  // for i := 1; i < ppt; i++ {
-  //     if (*offsets)[i] < ppt {
-  //       return true
-  //     }
-  // }
+func contains(sens *[]Scenario, sen *Scenario, index int) bool {
+  for i := 0; i < index; i++ {
+    if (*sens)[i].id == (*sen).id {
+      return true
+    }
+  }
   return false
+}
+
+// sort the scenarios by the difference between the worst and best teams scores
+func sortSims(sims *[]Scenario) {
+  n:= len(*sims)
+  var iMin int = 0
+  for j := 0; j < n-1; j++ {
+    iMin = j
+    for i := j + 1; i < n; i++ {
+      if (*sims)[i].delta < (*sims)[iMin].delta {
+        iMin = i
+      }
+    }
+    if iMin != j {
+      (*sims)[j], (*sims)[iMin] = (*sims)[iMin], (*sims)[j]
+    }
+  }
+}
+
+func nextOffest(workSpace *[][]string, offsets *[]int, ppt int) bool {
+  var complete bool = false
+  var index int = ppt - 1
+  for complete == false {
+    if index == 0 {
+      return false
+    }
+    shiftRow(index, workSpace);
+    (*offsets)[index]++
+    if (*offsets)[index] >= ppt {
+       (*offsets)[index] = 0
+       index--
+    } else {
+      complete = true
+    }
+  }
+
+  return true
+}
+
+func nextOffest2(workSpace *[][]string, offsets *[]int, ppt int) bool {
+  var complete bool = false
+  var index int = ppt - 1
+  for complete == false {
+    if index == 0 {
+      return false
+    }
+    shiftCol(index, workSpace);
+    (*offsets)[index]++
+    if (*offsets)[index] >= ppt {
+       (*offsets)[index] = 0
+       index--
+    } else {
+      complete = true
+    }
+  }
+
+  return true
+}
+
+func shiftRow(index int, workSpace *[][]string) {
+  var length = len((*workSpace)[index])
+  var lastEl = (*workSpace)[index][length-1]
+
+  for i := length - 1; i > 0; i-- {
+    (*workSpace)[index][i] = (*workSpace)[index][i-1]
+  }
+
+  (*workSpace)[index][0] = lastEl
+}
+
+func shiftCol(index int, workSpace *[][]string) {
+  var length = len((*workSpace)[index])
+  var lastEl = (*workSpace)[length-1][index]
+
+  for i := length - 1; i > 0; i-- {
+    (*workSpace)[i][index] = (*workSpace)[i-1][index]
+  }
+
+  (*workSpace)[0][index] = lastEl
 }
 
 //add all the team combinations for the current orientaion of the workSpace
 func addTeams(workSpace *[][]string, teams *[]Scenario, players *map[string]Player, ppt int) {
-
   /** up and down **/
   row := []Team{}
   col := []Team{}

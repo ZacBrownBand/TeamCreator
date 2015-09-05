@@ -19,17 +19,39 @@ type Team struct {
 
 // creates a team object given a slice of players
 func newTeam(players []Player) Team{
+  sortPlayers(&players)
+  
   var score int = 0
+  var id string = ""
   for _, p := range(players) {
       score += int(p.score)
+      id += p.id
   }
+
   team := Team{
-    id: UUID(),
+    id: id,
     numPlayers: len(players),
     players: players,
     score: score,
   }
   return team
+}
+
+// sort the scenarios by the difference between the worst and best teams scores
+func sortPlayers(p *[]Player) {
+  n:= len(*p)
+  var iMin int = 0
+  for j := 0; j < n-1; j++ {
+    iMin = j
+    for i := j + 1; i < n; i++ {
+      if (*p)[i].id < (*p)[iMin].id {
+        iMin = i
+      }
+    }
+    if iMin != j {
+      (*p)[j], (*p)[iMin] = (*p)[iMin], (*p)[j]
+    }
+  }
 }
 
 // creates a formatted string sumerizing the team
