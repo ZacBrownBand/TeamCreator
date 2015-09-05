@@ -7,6 +7,7 @@ package main
 
 import (
   "bufio"
+  "fmt"
   "os"
   "strings"
 )
@@ -18,7 +19,13 @@ func loadData() map[string]Player {
     data, err := readData()
 
     if (err != nil) {
-        panic(err)
+      fmt.Println("There was an issue reading the file " +
+        fileName +
+        ". Please ensure that this file exsists in the following directory: " +
+        filePath +
+        "\nPlease see the config.go file to configure these settings." )
+
+      os.Exit(0)
     }
 
     // convet the raw data into typed data
