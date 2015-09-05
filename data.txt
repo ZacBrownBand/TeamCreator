@@ -1,11 +1,17 @@
 // the players data
-// name sex age endurance speed skill
-p1 M 21 9 1 9
-p2 F 22 8 2 8
-p3 M 23 7 3 7
-p4 F 24 6 4 6
-p5 M 25 5 5 5
-p6 F 26 4 6 4
-P7 M 27 3 7 3
-P8 F 28 2 8 2
-p9 M 29 1 9 1
+// name sex age rating
+p1 Male 21 37
+p2 Female 22 29
+p3 Male 23 22
+p4 Female 24 16
+p5 Male 25 11
+p6 Female 26 7
+P7 Male 27 4
+P8 Female 28 2
+p9 Male 29 1
+p10 Male 23 22
+p11 Female 24 16
+p12 Male 25 11
+p13 Female 26 7
+P14 Male 27 4
+P15 Female 28 2

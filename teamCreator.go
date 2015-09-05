@@ -2,27 +2,25 @@ package main
 
 /**
   * This is the main module.
-  * It is responsiple for driving the program
+  * It is responsiple for driving the program.
   */
-  
+
 import (
   "fmt"
   "os"
 )
 
 func main() {
-  //var x map[string]int
-  //x["key"] = 10
-
+  // load the player data from the disk
   var players map[string]Player = loadData()
 
-  // enter program loop
+  // while the user is not done
   for {
     printMenu()
+
     switch getInput() {
     case 0:
-      fmt.Print("Good bye\n")
-      os.Exit(0)
+        quit()
     case 1:
         printPlayers(players)
     case 2:
@@ -36,6 +34,11 @@ func printMenu() {
   fmt.Print("1) View all players.\n")
   fmt.Print("2) Run team creator.\n")
   fmt.Print("0) Exit\n")
+}
+
+func quit() {
+  fmt.Print("Good bye\n")
+  os.Exit(0)
 }
 
 // prompts and returns a users input
