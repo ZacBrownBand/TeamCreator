@@ -1,2 +1,4 @@
-# TeamCreator
-A Go application to create fair teams for events.
+![Logo](/logo.png?raw=true)
+
+#Divvy Up
+A GO application for divving up a group of people into fair teams.
