@@ -1,7 +1,8 @@
 package main
 
 /**
-  * Defines a team and provides some helper methods.
+  * Defines a team.
+  * @module team
   */
 
 import (
@@ -17,15 +18,18 @@ type Team struct {
   score int
 }
 
-// creates a team object given a slice of players
+/**
+  * Creates a team object given a slice of players.
+  * @constructs
+  * @param   {Array.<Player>} players
+  * @returns {Team}
+  */
 func newTeam(players []Player) Team{
-  sortPlayers(&players)
-  
-  var score int = 0
   var id string = ""
+  var score int = 0
   for _, p := range(players) {
-      score += int(p.score)
       id += p.id
+      score += int(p.score)
   }
 
   team := Team{
@@ -34,32 +38,42 @@ func newTeam(players []Player) Team{
     players: players,
     score: score,
   }
+
+  team.sortPlayers()
+
   return team
 }
 
-// sort the scenarios by the difference between the worst and best teams scores
-func sortPlayers(p *[]Player) {
-  n:= len(*p)
+/**
+  * Sorts the players on the team by the players ids. This is used
+  * as a hash for avoiding using the same scenario more than once.
+  */
+func (t Team) sortPlayers() {
+  p := t.players
+  n:= len(p)
   var iMin int = 0
   for j := 0; j < n-1; j++ {
     iMin = j
     for i := j + 1; i < n; i++ {
-      if (*p)[i].id < (*p)[iMin].id {
+      if p[i].id < p[iMin].id {
         iMin = i
       }
     }
     if iMin != j {
-      (*p)[j], (*p)[iMin] = (*p)[iMin], (*p)[j]
+      p[j], p[iMin] = p[iMin], p[j]
     }
   }
 }
 
-// creates a formatted string sumerizing the team
+/**
+  * Creates a formatted string sumerizing the team.
+  * @param {String} result
+  */
 func (t *Team) toString() (result string) {
-  result += "Team: " + t.name + "\n"
+  result += fmt.Sprintf("Team: %s\n", t.name)
   for i := 0; i < t.numPlayers; i++ {
     result += fmt.Sprintf("%-10s", t.players[i].name)
   }
-  result += "\nscore: " + fmt.Sprintf("%4s", strconv.Itoa(int(t.score)))
+  result += fmt.Sprintf("\nscore: %4s", strconv.Itoa(int(t.score)))
   return
 }

@@ -3,6 +3,7 @@ package main
 /**
   * This module is responsiple for reading data into the
   * aplication and deserializing it.
+` * @module loader
   */
 
 import (
@@ -12,8 +13,10 @@ import (
   "strings"
 )
 
-// load data from the file specified in config and return the collection of
-// players
+/** Loads data from the file specified in config and returns the collection of
+  * players as Player objects
+  * @returns {Array.<String, Player>
+  */
 func loadData() map[string]Player {
     // load the info from the file
     data, err := readData()

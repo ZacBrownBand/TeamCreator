@@ -3,6 +3,7 @@ package main
 /**
   * Module to do the heavy lifting. Computes all the different
   * combinations.
+  * @module simulation
   */
 
 import "fmt"

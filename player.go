@@ -1,13 +1,14 @@
 package main
 
 /**
-  * Defines a player and provides some helper methods.
+  * Defines a player.
+  * @module player
   */
 
 import (
+  "fmt"
   "strconv"
   "strings"
-  "fmt"
 )
 
 type Player struct {
@@ -18,7 +19,12 @@ type Player struct {
   sex string
 }
 
-// creates a player object based on serialized string
+/**
+  * Creates a player object based on serialized string.
+  * @constructs
+  * @param   {String} data A serialised string to use to create the player
+  * @returns {Player}
+  */
 func newPlayer(data string) Player{
   parts := strings.Split(data, " ")
 
@@ -34,13 +40,21 @@ func newPlayer(data string) Player{
   }
 }
 
-// returns a formated table head for the player data
+/**
+  * Creates a formated table head for the player data.
+  * @returns {String} A string that can be used as a header
+  *                   for a table of players
+  * @static
+  */
 func getPlayerTableHeader() string {
-  result := fmt.Sprintf("%-12s%-8s%-8s%8s", "Name", "Age", "Sex", "Skill")
-  return result + "\n" + strings.Repeat("_", len(result));
+  result := fmt.Sprintf("%-12s%-8s%-8s%8s\n", "Name", "Age", "Sex", "Skill")
+  return result + strings.Repeat("-", len(result))
 }
 
-// builds a string for displaying the players information
+/**
+  * Creates a user freindly string for displaying the players information.
+  * @retusn {String} result
+  */
 func (p *Player) toString() (result string) {
   age := strconv.Itoa(int(p.age))
   result += fmt.Sprintf("%-12s%-8s%-8s%8s", p.name, age, p.sex, strconv.Itoa(int(p.score)))

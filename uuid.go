@@ -1,18 +1,26 @@
 package main
 
 /**
-  * A module to create ids for objects
+  * A module to create unique identifiers.
+  * @module UUID
   */
 
 import "math/rand"
 
+const (
+  length int = 24
+)
+
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-// creates a unique id
+/**
+  * Creates a unique id.
+  * @returns {String}
+  */
 func UUID() string {
-    b := make([]rune, 24)
-    for i := range b {
-        b[i] = letters[rand.Intn(len(letters))]
+    parts := make([]rune, length)
+    for i := range parts {
+        parts[i] = letters[rand.Intn(len(letters))]
     }
-    return string(b)
+    return string(parts)
 }
