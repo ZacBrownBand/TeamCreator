@@ -2,6 +2,7 @@ package main
 
 /**
   * Defines a a collection of teams that can co-exsits.
+  * @module Scenario
   */
 
 import (
@@ -17,22 +18,25 @@ type Scenario struct {
   teams []Team
 }
 
-// creates a senerio object given the teams
+/**
+  * Creates a senerio object given the teams.
+  * @constructs
+  * @param {Array.<Team>} teams
+  * @returns {Scenario}
+  */
 func newScenario(teams []Team) Scenario{
   sortTeams(&teams)
 
   numTeams := len(teams)
   lowIndex := 0
   highIndex := 0
-  curScore := 0
   id := ""
   for i := 0; i < numTeams; i++ {
     id += teams[i].id
-    curScore = teams[i].score
-    if teams[lowIndex].score > curScore {
+    if teams[lowIndex].score > teams[i].score {
       lowIndex = i
     }
-    if teams[highIndex].score < curScore {
+    if teams[highIndex].score < teams[i].score {
       highIndex = i
     }
   }
@@ -46,7 +50,10 @@ func newScenario(teams []Team) Scenario{
   }
 }
 
-// sort the scenarios by the difference between the worst and best teams scores
+/**
+  * Sort the scenarios by the difference between the worst and best teams scores
+  * @param {ref:Array.<Team>}
+  */
 func sortTeams(t *[]Team) {
   n:= len(*t)
   var iMin int = 0
@@ -63,7 +70,10 @@ func sortTeams(t *[]Team) {
   }
 }
 
-// builds a string for displaying the players information
+/**
+  * Builds a string for displaying the players information.
+  * @returns {String} result
+  */
 func (s *Scenario) toString() (result string) {
   lineLength := len(s.teams[0].players) * 14 + 20
   dashLine := strings.Repeat("-", lineLength) + "\n"
