@@ -53,7 +53,7 @@ func (t Team) sortPlayers() {
   for j := 0; j < n-1; j++ {
     iMin = j
     for i := j + 1; i < n; i++ {
-      if p[i].id < p[iMin].id {
+      if p[i].score > p[iMin].score {
         iMin = i
       }
     }

@@ -60,7 +60,7 @@ func sortTeams(t *[]Team) {
   for j := 0; j < n-1; j++ {
     iMin = j
     for i := j + 1; i < n; i++ {
-      if (*t)[i].id < (*t)[iMin].id {
+      if (*t)[i].score > (*t)[iMin].score {
         iMin = i
       }
     }
