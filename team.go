@@ -25,21 +25,19 @@ type Team struct {
   * @returns {Team}
   */
 func newTeam(players []Player) Team{
-  var id string = ""
-  var score int = 0
-  for _, p := range(players) {
-      id += p.id
-      score += int(p.score)
-  }
-
   team := Team{
-    id: id,
+    id: "",
     numPlayers: len(players),
     players: players,
-    score: score,
+    score: 0,
   }
 
   team.sortPlayers()
+
+  for _, p := range(team.players) {
+      team.id += p.id
+      team.score += int(p.score)
+  }
 
   return team
 }
@@ -55,7 +53,7 @@ func (t Team) sortPlayers() {
   for j := 0; j < n-1; j++ {
     iMin = j
     for i := j + 1; i < n; i++ {
-      if p[i].id < p[iMin].id {
+      if p[i].score > p[iMin].score {
         iMin = i
       }
     }

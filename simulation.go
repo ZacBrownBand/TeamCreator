@@ -17,7 +17,7 @@ func runSimulation(players map[string]Player) {
 
   // fill in the empty slots with people with zero scores
   for i := len(players); i < ppt*ppt; i++ {
-    uuid := UUID()
+    uuid := "0000" + UUID()
     players[uuid] = Player {name: "--", id: uuid, sex: "Male"}
   }
 
